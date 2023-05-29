@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/style_sheet.css" type="text/css">
+    <link rel="shortcut icon" href="/static/favicon.ico" />
+    <title>Outcome - G.A.M.E</title>
+  </head>
+
+  <body>
+    <div class="paper">
+      <h1>Exam Result</h1><br>
+      <p>In total of {{total}} questions<br> <!-- Display all the returned values -->
+        {{correct}} are correct<br>
+        {{wrong}} are wrong<br>
+        {{total - correct - wrong}} are left unanswered<br><br>
+        {% if authority == "normal" %} <!-- For normal user their ability rating may change -->
+          Your current ability rating is {{new_ability}}
+          Changed by {{(new_ability - old_ability)|round(1)}} from {{old_ability}}
+          <a href="/exam_next">Continue</a>
+        {% endif %}
+      </p>
+    </div>
+  </body>
+</html>

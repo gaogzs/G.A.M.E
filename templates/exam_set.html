@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/style_sheet.css" type="text/css">
+    <link rel="shortcut icon" href="/static/favicon.ico" />
+    <title> Practice Questions - G.A.M.E</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> <!-- Import MathJax to display the formula -->
+  </head>
+
+  <body>
+    <div class="paper">
+      <h1>Practicing set {{name}}</h1>
+      {% if index < 0 %} <!-- Question index is -1 if not started -->
+        <p>Choose any question from the list to begin</p>
+      {% endif %}
+      <p></p>
+      <div class="exam_box_frame"> <!-- Construct the frame -->
+        <div class="exam_box_nav"> <!-- The navigation to questions -->
+          {% for i in serie %}
+            <a href="/{{page}}/{{name}}/{{i}}" class="exam_nav_link">Question {{i + 1}}  </a>  <!-- Display a list of links to each question -->
+            {% with marks = get_flashed_messages(category_filter=("mark"))[0] %} <!-- Display mark for each question -->
+              {% if marks[i] > 0 %}
+                <p class="tick">☑</p>
+              {% elif marks[i] < 0 %}
+                <p class="cross">☒</p>
+              {% else %}
+                <p>☐</p>
+              {% endif %}
+            {% endwith %}
+            <br>
+          {% endfor %}
+          <a href="/{{page}}/{{name}}/end">End Exam</a> <!-- The link to end the exam -->
+        </div>
+        <div class="exam_box_display"> <!-- The area to display question -->
+          {% if index >= 0 %}
+            <p>Question {{index + 1}}</p>
+            {% for line in set.all()[index]["question"] %} <!-- Display the question line by line -->
+            {{line|safe}}<br>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <div class="exam_box_enter"> <!-- The area to enter answers -->
+          <form action="" method="POST">
+            {% with marks = get_flashed_messages(category_filter=("mark"))[0] %} <!-- Only allow to answer if not answered yet -->
+              {% if marks[index] == 0 %}
+                {% if index >= 0 %}
+                  {% for key, value in set.all()[index]["answer"].items()%}
+                    {% if "|" in key %} <!-- Show the label with the input box -->
+                      {% set prefix, suffix = key.split("|") %}
+                    {% else %}
+                      {% set prefix = key %}
+                      {% set suffix = "" %}
+                    {% endif %}
+                    {{prefix}}: <input type="text" name="{{key}}" size={{value|string|length}}>{{suffix}}
+                  {% endfor %}
+                      <input type="submit" value="Submit" name="submit">
+                {% endif %}
+              {% endif %}
+            {% endwith %}
+          </form>
+        </div>
+        {% if index >= 1 %} <!-- If after the first one, display the "previous" button -->
+          <a href="/{{page}}/{{name}}/{{index - 1}}">Previous</a>
+        {% endif %}
+        {% if index >= 0 and index < question_count %} <!-- If before the last question, display the "next" button -->
+          <a href="/{{page}}/{{name}}/{{index + 1}}">Next</a>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

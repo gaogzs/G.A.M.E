@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redirecting</title>
+    <link rel="shortcut icon" href="/static/favicon.ico" />
+  </head>
+  <body>
+    <p>{{process}} success, redirecting to {{target}}</p>
+    <!-- Show a redirect message last for 1 sec -->
+    <script>
+      var timer = setTimeout(function(){window.location.href='{{redirect_url}}';}, 1000);
+    </script>
+  </body>
+</html>

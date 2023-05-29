@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/style_sheet.css" type="text/css">
+    <link rel="shortcut icon" href="/static/favicon.ico" />
+    <title>Login - G.A.M.E</title>
+  </head>
+
+  <body>
+    <div class="paper">
+      <h1>Welcome to Generating Arguments for Mathematical Examination</h1><br>
+      <div class="login">
+        <form target="" method="POST">
+          <h5>Log in:</h5>
+          {% for message in get_flashed_messages(category_filter=("login_error")) %} <!-- Show returned error message if any -->
+            <p class="error">{{message}}</p>
+          {% endfor %}
+          <label for="username">Username:</label><br> <!-- Fields for username and password -->
+          <input type="text" id="username" name="username" required><br>
+          <label for="password">Password:</label><br>
+          <input type="password" id="password" name="password" required><hr>
+          <input type="submit" value="Log in" name="login"><hr>
+        </form>
+        <form name="register" action="/register" method="GET">
+          <input type="submit" value="Register" name="register"> <!-- A button guides to the register page -->
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

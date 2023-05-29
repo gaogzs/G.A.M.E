@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/style_sheet.css" type="text/css">
+    <link rel="shortcut icon" href="/static/favicon.ico" />
+    <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script> <!-- Import Plotly for graph plotting -->
+    <title>G.A.M.E</title>
+  </head>
+
+  <body>
+    <nav>
+      <a href="/home">Home</a>
+      <a href="/exam">Practice</a>
+      {% if authority == "admin" %}
+        <a href="/generation">Generator</a>
+      {% endif %}
+      {% if authority == "tester" or authority == "admin" %}
+        <a href="/rasch">Rasch Test</a>
+      {% endif %}
+      <a href="/login">Log out</a>
+    </nav>
+
+
+
+    <div class="paper">
+      <h1>Hello {{username}}!</h1>
+      <p>Statistic:</p>
+      {% if not authority == "admin" %}
+        <p>Questions of each topic you have done:</p>
+        <div id="topic_count"></div> <!-- Make number of different topics don in a bar chart -->
+      {% endif %}
+      <br><p>Your current ability: {{ability}}</p><hr> <!-- Show current ability -->
+      {% if authority == "admin" %}
+        <form target="" method="POST">
+          <h5>Adding new accounts:</h5>
+          <label for="username">Username:</label><br> <!-- Let admin add new accounts -->
+          <input type="text" id="username" name="username"><br>
+          <label for="password">Password:</label><br>
+          <input type="password" id="password" name="password"><br>
+          <label for="password">Account type:</label><br>
+          <select id="actype" name="actype">
+            <option value="normal">Normal</option>
+            <option value="tester">Tester</option>
+            <option value="admin">Admin</option>
+          </select>
+          <input type="submit" value="Add" name="Add">
+        </form><hr>
+      {% endif %}
+      <p>Recently done practices:</p> <!-- All records, not just recent, actually -->
+      <table> <!-- The table of exam records, admin is allowed to view all and other users can only view themselves' -->
+        <tr>
+          <th>Type</th>
+          {% if authority == "admin" %} <!-- Admin can view the username for each record since he/she/it can see all users'records -->
+            <th>User</th>
+          {% endif %}
+            <th>User Ability</th>
+          <th>Question Set</th>
+          <th>Set Difficulty</th>
+          <th>Date&Time</th>
+          <th>Total Questions</th>
+          <th>Questions Correct</th>
+          <th>Questions Wrong</th>
+          <th>View details</th>
+        </tr>
+        {% for index in range(1, record|length + 1) %}
+        {% set row = record[record|length - index] %}
+          <tr>
+            <td>
+              {{row["type"]}}
+            </td>
+            {% if authority == "admin" %}
+              <td>
+                {{row["username"]}}
+              </td>
+            {% endif %}
+              <td>
+                {{row["ability"]}}
+              </td>
+            <td>
+              {{row["setname"]}}
+            </td>
+            <td>
+              {{row["difficulty"]}}
+            </td>
+            <td>
+              {{row["datetime"]}}
+            </td>
+            <td>
+              {{row["marks"]|length}}
+            </td>
+            <td>
+              {{row["marks"].count(1)}}
+            </td>
+            <td>
+              {{row["marks"].count(-1)}}
+            </td>
+            <td>
+              <a href="/view-record/{{row["username"]}}/{{row["datetime"]}}" target="_blank">details</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </body>
+
+  <!-- JS script to draw the bar chart -->
+  <script>
+    var topic_count = [
+      {
+        x: {{topic_key|safe}},
+        y: {{topic_value|safe}},
+        type: 'bar'
+      }
+      ];
+
+    Plotly.newPlot('topic_count', topic_count);
+  </script>
+</html>

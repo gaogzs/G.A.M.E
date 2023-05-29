@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/style_sheet.css" type="text/css">
+    <link rel="shortcut icon" href="/static/favicon.ico" />
+    <title>G.A.M.E</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> <!-- Import MathJax to display the formula -->
+  </head>
+
+  <body>
+    <div class="paper">
+      <table> <!-- Display the table of questions and answers -->
+        <tr>
+          <th>Question</th>
+          <th>Correct Answer</th>
+          <th>Marking</th>
+        </tr>
+        {% for i in serie %}
+          {% set row = set[i] %}
+          <tr>
+            <td>
+              {% for line in row["question"] %}
+                {{line|safe}}<br> <!-- Display the question line by line -->
+              {% endfor %}
+            </td>
+            <td>
+              {% for key, value in row["answer"].items() %}
+                {% if "|" in key %}
+                  {% set prefix, suffix = key.split("|") %}
+                {% else %}
+                  {% set prefix = key %}
+                  {% set suffix = "" %}
+                {% endif %} <!-- Show the label with the answer -->
+                {{prefix}}:{{value}}{{suffix}}
+              {% endfor %}
+            </td>
+            <td>
+              {% if marks[i] > 0 %} <!-- Show the mark -->
+                <p class="tick">☑</p>
+              {% elif marks[i] < 0 %}
+                <p class="cross">☒</p>
+              {% else %}
+                <p>☐</p>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/style_sheet.css" type="text/css">
+    <link rel="shortcut icon" href="/static/favicon.ico" />
+    <title>Generator - G.A.M.E</title>
+  </head>
+
+  <body>
+    <nav>
+      <a href="/home">Home</a>
+      <a href="/exam">Practice</a>
+      {% if authority == "admin" %}
+        <a href="/generation">Generator</a>
+      {% endif %}
+      {% if authority == "tester" or authority == "admin" %}
+        <a href="/rasch">Rasch Test</a>
+      {% endif %}
+      <a href="/login">Log out</a>
+    </nav>
+
+    <div class="paper">
+      <h1>Question Generation Tab</h1>
+      <br>
+      <p>This is the tab for generating random questions, only admins are allowed to access it<br>
+      Choose a topic, and then the rough difficulty and the number of questions, click confirm to generate</p>
+      <hr>
+      {% if authority == "admin" %}
+        <p>Here is a list of topics current available:</p>
+        <form action="" method="POST">
+          {% for item in topic_list %}
+            <input type="radio" name="topic" value={{item}} id={{item}} required>
+            <label for={{item}}>{{item}}</label><br>
+          {% endfor %}
+          <hr>
+          <label for="difficulty">Rough Difficulty:</label>
+          <input type="number" name="difficulty" id="difficulty" min=0 max=10 required><hr>
+          <label for="amount">Number of questions:</label>
+          <input type="number" name="amount" id="amount" min=10 value=25 step=0.1 required><hr>
+          <input type="submit" value="Confirm">
+        </form>
+        <hr>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Difficulty</th>
+            <th>Estimated difficulty</th>
+            <th>Number of questions</th>
+            <th>Topic</th>
+            <th>Action</th>
+          </tr>
+          {% for row in set_list %}
+            <tr>
+              <td>{{row["setname"]}}</td>
+              <td>{{row["difficulty"]}}</td>
+              <td>{{row["rasch_dif"]}}</td>
+              <td>{{row["question_count"]}}</td>
+              <td>{{row["topic"]}}</td>
+              <td><a href="/view-set/{{row['setname']}}" target="_blank">view</a>  <a href="/delete-set/{{row['setname']}}">delete</a></td>
+            </tr>
+          {% endfor %}
+        {% endif %}
+      </table>
+    </div>
+  </body>
+</html>
